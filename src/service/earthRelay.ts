@@ -3,6 +3,7 @@ import { formatEvent, formatNotice, formatOk, formatNotOk } from '../helper/form
 import Event from '../model/event';
 
 import { getEvents } from '../repository/mysql';
+import { storeEvent } from '../repository/mysql';
 import { formatEose } from '../helper/format-event';
 
 const baseUri = process.env.BASE_URI;
@@ -59,13 +60,13 @@ const getReq = async (ws: WebSocket, filters: any, subscriptionId: string) => {
 
 const putEvent = async (ws: WebSocket, event: Event) => {
   try {
-    // Get the event from the engine endpoint
-    const response = await axios.put(`${baseUri}/v1/nostr/ws`, event);
+    // Store the event in the DB
+    const response = await storeEvent(event);
 
     // send nip01 result
     ws.send(formatOk(event.id));
 
-    return response.data;
+    return response;
   } catch (err) {
     console.error(
       `[ERROR]: Error when persisting event to Relay! Status: ${err.response?.status}, Message: ${err.response?.data?.message}`

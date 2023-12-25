@@ -1,4 +1,5 @@
 import * as mysql from 'mysql2/promise';
+import Event from '../model/event';
 
 const getConnection = async () => {
   return await mysql.createConnection({
@@ -81,4 +82,29 @@ export const getEvents = async (filters: any) => {
   } catch (error) {
     console.log(error);
   }
+}
+
+export const storeEvent = async (event: Event) => {
+  
+  const connection = await getConnection();
+  const query = 'INSERT INTO nostr_events (id, pubkey, created_at, kind, tags, content, sig, deleted) VALUES (?, ?)';
+  const values = [
+    event.id, 
+    event.pubkey, 
+    event.created_at, 
+    event.kind, 
+    event.tags, 
+    event.content, 
+    event.sig,
+  ];
+
+  try {
+    connection.connect();
+    const results = await connection.execute(query, values);
+    connection.end(); // TODO fix conn pooling
+    return results?.[0] || [];
+  } catch (error) {
+    console.log(error);
+  }
+
 }
