@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        {{- if eq .Values.istio.enabled true }}
+        sidecar.istio.io/inject: "true"
+        {{- end }}
+      annotations:
+        fluentbit.io/exclude: "true"
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag}}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.server.port }}
+          env:
+            - name: SERVER_PORT
+              value: {{ .Values.server.port | quote }}
+            - name: SERVER_PATH
+              value: {{ .Values.server.path | quote }}
+            - name: BASE_URI
+              value: {{ .Values.minds.baseUri }}
+            - name: LIVE_POLLING_INTERVAL
+              value: {{ .Values.minds.pollingInterval | quote }}
+            - name: MAX_SUBSCRIPTIONS
+              value: {{ .Values.server.maxSubs | quote }}
+            - name: REDIS_HOST
+              value: "{{ .Release.Name }}-redis-master"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: RATELIMIT_POINTS
+              value: {{ .Values.ratelimit.points | quote }}
+            - name: RATELIMIT_DURATION_SECONDS
+              value: {{ .Values.ratelimit.duration | quote }}
+            - name: FF_POLL_SUBSCRIPTIONS
+              value: {{ .Values.featureFlags.pollSubscriptions | quote }}
+            - name: REDIS_AUTH
+              value: "true"
+            - name: REDIS_USERNAME
+              value: "default"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-redis
+                  key: redis-password
+            - name: MYSQL_HOST
+              value: minds-vtgate.vitess.svc.cluster.local
+            - name: MYSQL_PORT
+              value: '3306'
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-mysql
+                  key: mysql-user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-mysql
+                  key: mysql-password
+            - name: MYSQL_DATABASE
+              value: minds

@@ -1,0 +1,50 @@
+featureFlags:
+  pollSubscriptions: false
+
+minds:
+  baseUri: "http://minds-engine-staging.default.svc"
+  pollingInterval: 60000 # 1 min
+
+image:
+  repository: registry.gitlab.com/minds/infrastructure/nostr-relay
+  pullPolicy: Always
+  tag: latest
+
+server:
+  path: /nostr/v1/ws
+  port: 3000
+  maxSubs: 5
+
+ingress:
+  host: test.earthstaking.com
+  annotations: {}
+
+istio:
+  enabled: false
+
+tests:
+  event: 9b53ea0138c92d9c971a919ece7cd3542f741aef2c7b23084e7b48733e5258ef
+
+ratelimit:
+  points: 50
+  duration: 5 # Seconds
+
+redis:
+  master:
+    count: 1
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 512Mi
+        cpu: 300m
+  replica:
+    replicaCount: 1
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 512Mi
+        cpu: 300m

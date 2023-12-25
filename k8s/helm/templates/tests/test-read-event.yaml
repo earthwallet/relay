@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: '{{ .Chart.Name }}-test-read-event'
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    'helm.sh/hook': test
+spec:
+  restartPolicy: Never
+  containers:
+    - name: noscl
+      image: golang:1.18-alpine
+      command: ['/bin/sh']
+      args:
+        - '-c'
+        - |
+          # TODO build custom image, this is ugly.
+          go install github.com/fiatjaf/noscl@latest
+          mkdir -p ~/.config/nostr
+
+          noscl relay add ws://{{ .Chart.Name }}.{{ .Release.Namespace }}.svc:{{ .Values.server.port }}
+          noscl event {{ .Values.tests.event }}

@@ -1,0 +1,45 @@
+{
+  "name": "nostr-relay",
+  "version": "0.0.0",
+  "description": "WebSockets frontend for Nostr relay",
+  "author": "Zack Wynne (zack@minds.com)",
+  "license": "AGPL-3.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node -r dotenv/config dist/index.js",
+    "dev": "tsc -w --sourcemap & nodemon -r dotenv/config --inspect=9229 -- dist/index.js",
+    "fmt": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:helm": "helm test nostr-relay",
+    "k3d:create": "k3d cluster create --config=k8s/k3d.yaml",
+    "k3d:start": "k3d cluster start nostr-relay",
+    "k3d:down": "k3d cluster delete nostr-relay",
+    "k3d:dev": "tsc -w & skaffold dev"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.2",
+    "ioredis": "^5.2.5",
+    "mysql2": "^3.5.0",
+    "prom-client": "^14.1.1",
+    "rate-limiter-flexible": "^2.4.1",
+    "ws": "^8.8.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.2",
+    "@types/node": "^18.17.8",
+    "@types/ws": "^8.5.3",
+    "eslint": "^8.17.0",
+    "eslint-config-prettier": "^8.5.0",
+    "jest": "^28.1.1",
+    "mock-socket": "^9.1.5",
+    "nodemon": "^2.0.16",
+    "nostr-tools": "^0.23.3",
+    "prettier": "2.6.2",
+    "ts-jest": "^28.0.5",
+    "typescript": "^4.7.4"
+  }
+}

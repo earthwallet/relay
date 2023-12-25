@@ -1,0 +1,22 @@
+apiVersion: skaffold/v2beta28
+kind: Config
+build:
+  artifacts:
+    - image: minds-nostr-relay
+deploy:
+  helm:
+    releases:
+      - name: minds-nostr-relay
+        namespace: nostr-relay
+        createNamespace: true
+        chartPath: k8s/helm
+        artifactOverrides:
+          image: minds-nostr-relay
+        imageStrategy:
+          helm: {}
+        setValues:
+          image.repository: minds-nostr-relay
+          image.pullPolicy: IfNotPresent
+          ingress.host: localhost
+          istio.enabled: false
+          minds.baseUri: "https://www.minds.com"

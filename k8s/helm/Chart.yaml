@@ -1,0 +1,10 @@
+apiVersion: v2
+name: nostr-relay
+description: WebSockets frontend for Nostr relay
+type: application
+version: 0.0.1
+appVersion: '0.0.1'
+dependencies:
+  - name: redis
+    repository: https://charts.bitnami.com/bitnami
+    version: "17.9.2"
