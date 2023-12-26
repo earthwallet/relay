@@ -53,18 +53,23 @@ const server = createServer(async (req, res) => {
         const parsedData = JSON.parse(body);
         console.log('Request body', parsedData);
         let applyTxs = parsedData?.apply;
-        for (let i in applyTxs) {
-          for (let j in applyTxs[i]?.transactions) {
-            console.log('BTC/apply tx', applyTxs[i].transactions[j].transaction_identifier.hash);
+        if (applyTxs) {
+          for (let i in applyTxs) {
+            for (let j in applyTxs[i]?.transactions) {
+              console.log('BTC/apply tx', applyTxs[i].transactions[j].transaction_identifier.hash);
+            }
           }
         }
         let rollbackTxs = parsedData?.rollback;
-        for (let k in rollbackTxs) {
-          for (let l in rollbackTxs[k]?.transactions) {
-            console.log('BTC/rollback', rollbackTxs[k]?.transactions[l].transaction_identifier.hash);
+        if (rollbackTxs.length > 0) {
+          for (let k in rollbackTxs) {
+            for (let l in rollbackTxs[k]?.transactions) {
+              console.log('BTC/rollback', rollbackTxs[k]?.transactions[l].transaction_identifier.hash);
+            }
           }
         }
       });
+      res.end();
     } else if (path === '/metrics') {
       prom_active_clients.set(wss.clients.size);
       await redis.ping(prom_redis_health);
