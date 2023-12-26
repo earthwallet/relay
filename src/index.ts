@@ -46,10 +46,10 @@ const server = createServer(async (req, res) => {
     if (path === '/bitcoin' && allowedOrigins.includes(req.socket.remoteAddress)) {
       console.log('[BTC/event]');
       let body;
-      req.on('data', chunk => {
+      res.on('data', chunk => {
         body += chunk.toString();
       });
-      req.on('end', () => {
+      res.on('end', () => {
         const parsedData = JSON.parse(body);
         console.log('Request body', parsedData);
         let applyTxs = parsedData?.apply;
@@ -69,7 +69,6 @@ const server = createServer(async (req, res) => {
           }
         }
       });
-      res.end();
     } else if (path === '/metrics') {
       prom_active_clients.set(wss.clients.size);
       await redis.ping(prom_redis_health);
