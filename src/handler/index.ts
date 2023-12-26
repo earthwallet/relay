@@ -14,8 +14,8 @@ const handler = async (
 ) => {
   try {
     const event = JSON.parse(query);
+    console.log('New handler event: ', event)
     const key = event?.[0] || '';
-
     const subscriptionId = event?.[1] || '';
     // const filters = event?.[2] || {};
 
@@ -44,7 +44,7 @@ const handler = async (
         // Then, handle request
         prom_number_of_reqs.inc();
 
-        // Fetch events from MySQL
+        // Fetch events from PostgreSQL
         await earthRelayService.getReq(ws, filters, subscriptionId);
         break;
       case NOSTR.EVENT:

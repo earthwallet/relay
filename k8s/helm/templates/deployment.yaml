@@ -59,19 +59,19 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-redis
                   key: redis-password
-            - name: MYSQL_HOST
+            - name: POSTGRES_HOST
               value: minds-vtgate.vitess.svc.cluster.local
-            - name: MYSQL_PORT
+            - name: POSTGRES_PORT
               value: '3306'
-            - name: MYSQL_USER
+            - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-mysql
-                  key: mysql-user
-            - name: MYSQL_PASSWORD
+                  name: {{ .Release.Name }}-postgres
+                  key: postgres-user
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-mysql
-                  key: mysql-password
-            - name: MYSQL_DATABASE
-              value: minds
+                  name: {{ .Release.Name }}-postgres
+                  key: postgres-password
+            - name: POSTGRES_DATABASE
+              value: earth

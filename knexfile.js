@@ -1,37 +1,18 @@
 // Update with your config settings.
 module.exports = {
-  testnet: {
-    client: "mysql",
-    connection: {
-      host: process.env.DB_HOST ?? 'localhost',
-      port: process.env.DB_PORT ?? 5432,
-      user: process.env.DB_USER ?? 'username',
-      password: process.env.DB_PASSWORD ?? 'password',
-      database: process.env.DB_NAME ?? 'testnet',
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: "knex_migrations"
-    }
+  client: "pg",
+  connection: {
+    host: process.env.POSTGRES_HOST ?? 'localhost',
+    port: process.env.POSTGRES_PORT ?? 5432,
+    user: process.env.POSTGRES_USER ?? 'postgres',
+    password: process.env.POSTGRES_PASSWORD ?? 'postgres',
+    database: process.env.POSTGRES_DATABASE ?? 'postgres',
   },
-  mainnet: {
-    client: "mysql",
-    connection: process.env.DB_URI ? process.env.DB_URI : {
-      host: process.env.DB_HOST ?? 'localhost',
-      port: process.env.DB_PORT ?? 5432,
-      user: process.env.DB_USER ?? 'username',
-      password: process.env.DB_PASSWORD ?? 'password',
-      database: process.env.DB_NAME ?? 'mainnet',
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: "knex_migrations"
-    }
+  pool: {
+    min: 2,
+    max: 10
+  },
+  migrations: {
+    tableName: "knex_migrations"
   }
 };

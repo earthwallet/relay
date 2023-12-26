@@ -1,0 +1,40 @@
+{
+    "name": "Earth Relay",
+    "icon": "https://earthstaking.com/logo.jpg",
+    "description": "Official Earth Staking Relay for Nostr",
+    "pubkey": "npub18rx66emuejjesctxwn9kpp6ujunn39wpg8snrxc486ug7g7ej2kqrcavfw",
+    "contact": "relay@earthstaking.com",
+    "supported_nips": [1, 77],
+    "software": "https://github.com/earthstaking/relay",
+    "version": "0.1.0",
+    "limitation": {
+      "max_message_length": 16384,
+      "max_subscriptions": 20,
+      "max_filters": 100,
+      "max_limit": 5000,
+      "max_subid_length": 100,
+      "max_event_tags": 100,
+      "max_content_length": 8196,
+      "min_pow_difficulty": 30,
+      "auth_required": true,
+      "payment_required": true,
+      "restricted_writes": true,
+      "created_at_lower_limit": 31536000,
+      "created_at_upper_limit": 3
+    },
+    "retention": [
+      {"kinds": [1], "time": 3600},
+      {"kinds": [77], "time": null},
+      {"time": 3600, "count": 10000}
+    ],
+    "relay_countries": [ "EARTH" ],
+    "language_tags": ["en", "es"],
+    "tags": ["bitcoin", "ethereum", "earth", "social"],
+    "posting_policy": "https://earthstaking.com/policy.html",
+    "payments_url": "",
+    "fees": {
+      "admission": [{ "amount": 1, "unit": "EARTH" }],
+      "subscription": [{ "amount": 1, "unit": "EARTH", "period": 2592000 }],
+      "publication": [{ "kinds": [77], "amount": 100, "unit": "EARTH" }],
+    }
+  }

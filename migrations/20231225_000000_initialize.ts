@@ -1,60 +1,46 @@
+/**
+ * Create Initial Database Schemas
+ */
+
 exports.up = function (knex) {
     return knex.raw(`
     CREATE TABLE IF NOT EXISTS nostr_events (
-        id varchar(64),
+        id varchar(64) UNIQUE,
         pubkey varchar(64),
-        created_at timestamp,
+        created_at timestamp without time zone,
         kind int,
         tags text,
         content text,
         sig varchar(128),
-        deleted boolean DEFAULT 0,
+        deleted boolean DEFAULT false,
         PRIMARY KEY (id, pubkey)
-    ) ENGINE=InnoDB;
-
-    CREATE TABLE IF NOT EXISTS nostr_mentions (
-        id varchar(64),
-        pubkey varchar(64),
-        FOREIGN KEY (id) REFERENCES nostr_events(id),
-        PRIMARY KEY (id, pubkey)
-    ) ENGINE=InnoDB;
+    );
     
-    CREATE TABLE IF NOT EXISTS nostr_users (
-        pubkey varchar(64),
-        user_guid bigint,
-        is_external boolean,
-        PRIMARY KEY (pubkey)
-    ) ENGINE=InnoDB;
+    CREATE TABLE IF NOT EXISTS bitcoin_events (
+        network int,
+        bpubkey varchar(64),
+        block_height int,
+        txid varchar(64),
+        content varchar(64),
+        npub varchar(64),
+        PRIMARY KEY (author)
+    );
     
-    CREATE TABLE IF NOT EXISTS nostr_kind_1_to_activity_guid (
-        id varchar(64),
-        activity_guid bigint,
-        owner_guid bigint,
-        is_external boolean,
-        PRIMARY KEY (id, activity_guid)
-    ) ENGINE=InnoDB;
-    
-    CREATE TABLE IF NOT EXISTS nostr_pubkey_whitelist (
-        pubkey varchar(64),
-        PRIMARY KEY (pubkey)
-    ) ENGINE=InnoDB;
-    
-    CREATE TABLE IF NOT EXISTS nostr_nip26_tokens (
-        delegate_pubkey varchar(64),
-        delegator_pubkey varchar(64),
-        conditions_query_string text,
-        sig varchar(128),
-        PRIMARY KEY (delegate_pubkey)
-    ) ENGINE=InnoDB;
-    `)
+    CREATE TABLE IF NOT EXISTS ethereum_events (
+        network int,
+        epubkey varchar(64),
+        block_height int,
+        txid varchar(64),
+        content varchar(64),
+        npub varchar(64),
+        PRIMARY KEY (author)
+    );`)
   }
   
   exports.down = function (knex) {
     return knex.raw(`
-        DROP TABLE IF EXISTS nostr_events;
-        DROP TABLE IF EXISTS nostr_mentions;
-        DROP TABLE IF EXISTS nostr_kind_1_to_activity_guid;
-        DROP TABLE IF EXISTS nostr_pubkey_whitelist;
-        DROP TABLE IF EXISTS nostr_nip26_tokens;
+        DROP TABLE IF EXISTS ethereum_events;
+        DROP TABLE IF EXISTS bitcoin_events;
+        DROP TABLE IF EXISTS social_events;
     `)
   }

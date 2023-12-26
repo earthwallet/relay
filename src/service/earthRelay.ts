@@ -1,12 +1,13 @@
-import axios from 'axios';
 import { formatEvent, formatNotice, formatOk, formatNotOk } from '../helper/format-event';
 import Event from '../model/event';
 
-import { getEvents } from '../repository/mysql';
-import { storeEvent } from '../repository/mysql';
+import { getEvents } from '../repository/postgres';
+import { storeEvent } from '../repository/postgres';
 import { formatEose } from '../helper/format-event';
 
 const baseUri = process.env.BASE_URI;
+
+// TODO: Implement NIP-42
 
 const getReq = async (ws: WebSocket, filters: any, subscriptionId: string) => {
   console.log('Sending...');
@@ -21,18 +22,15 @@ const getReq = async (ws: WebSocket, filters: any, subscriptionId: string) => {
     rows.push(...result);
   }
 
-  // Convert the MySQL rows to the format expected by the client
+  // Convert the PostgreSQL rows to the format expected by the client
   const events = rows.map(row => {
-
     const tags = [];
-
     if (row.e_ref) {
       tags.push(['e', row.e_ref]);
     }
     if (row.p_ref) {
       tags.push(['p', row.p_ref]);
     }
-
     const event = {
       id: row.id,
       pubkey: row.pubkey,
@@ -42,7 +40,6 @@ const getReq = async (ws: WebSocket, filters: any, subscriptionId: string) => {
       content: row.content,
       sig: row.sig
     };
-
     return event;
   });
 

@@ -3,6 +3,8 @@ import { RateLimiterRedis } from 'rate-limiter-flexible';
 
 const redisAuth = process.env.REDIS_AUTH === 'true';
 
+console.log('REDIS', process.env.REDIS_HOST, parseInt(process.env.REDIS_PORT))
+
 const client = new Redis({
   host: process.env.REDIS_HOST,
   port: parseInt(process.env.REDIS_PORT),

@@ -41,13 +41,13 @@ const prom_redis_ratelimited_clients = new client.Counter({ name: 'prom_redis_ra
 const server = createServer(async (req, res) => {
   console.log(new Date() + ' Received HTTP request for ' + req.url);
   try {
-    const { path } = parse(req.url);
-
-    // For now we only register the metrics endpoint, later we can rework this to a proper controller layer
-    if (path === '/metrics') {
+    const { path, auth } = parse(req.url);
+    // Register the metrics endpoint
+    if (path === '/bitcoin' && auth === process.env.AUTH_HEADER) {
+      console.log('new bitcoin event', req);
+    } else if (path === '/metrics') {
       prom_active_clients.set(wss.clients.size);
       await redis.ping(prom_redis_health);
-
       res.setHeader('Content-Type', client.register.contentType);
       res.end(await client.register.metrics());
     } else {
@@ -72,7 +72,7 @@ const wss = new WebSocketServer({ server: server });
 
 console.log(`PID: ${process.pid}`);
 console.log(
-  `Listening on port: ${process.env.SERVER_PORT} and path: ${process.env.SERVER_PATH}`
+  `Listening on port: ${process.env.SERVER_PORT}`
 );
 
 // Open socket and pass event to the event handler
@@ -135,8 +135,6 @@ wss.on(SOCKET.CONNECTION, (ws, req) => {
       });
     }, parseInt(process.env.LIVE_POLLING_INTERVAL))
   }
-
-
 
   // On Close
   ws.on('close', () => {
