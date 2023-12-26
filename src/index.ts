@@ -12,7 +12,7 @@ import * as client from 'prom-client';
 import * as redis from './repository/redis';
 
 // HTTP Server
-
+const allowedOrigins = ['127.0.0.1', 'localhost'];
 const prom_active_subscriptions = new client.Gauge({
   name: 'nostr_active_subscriptions',
   help: 'Number of active subscriptions'
@@ -39,12 +39,32 @@ const prom_redis_health = new client.Gauge({
 const prom_redis_ratelimited_clients = new client.Counter({ name: 'prom_redis_ratelimited_clients', help: 'number of clients limited' });
 
 const server = createServer(async (req, res) => {
+  const origin = req.headers.origin || req.headers.referer || req.connection.remoteAddress;
   console.log(new Date() + ' Received HTTP request for ' + req.url);
   try {
-    const { path, auth } = parse(req.url);
-    // Register the metrics endpoint
-    if (path === '/bitcoin' && auth === process.env.AUTH_HEADER) {
-      console.log('new bitcoin event', req);
+    const { path } = parse(req.url);
+    // Register the bitcoin endpoint, ensure it is a local source
+    if (path === '/bitcoin' && allowedOrigins.includes(origin)) {
+      let body;
+      req.on('data', chunk => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        const parsedData = JSON.parse(body);
+        let applyTxs = parsedData?.apply.trasactions;
+        console.log('[BTC/event]');
+        for (let i in applyTxs) {
+          for (let j in applyTxs[i].transactions) {
+            console.log('BTC/apply',applyTxs[i].transactions[j]);
+          }
+        }
+        let rollbackTxs = parsedData?.rollback.trasactions;
+        for (let k in applyTxs) {
+          for (let l in applyTxs[k].transactions) {
+            console.log('BTC/rollback',applyTxs[k].transactions[l]);
+          }
+        }
+      });
     } else if (path === '/metrics') {
       prom_active_clients.set(wss.clients.size);
       await redis.ping(prom_redis_health);
