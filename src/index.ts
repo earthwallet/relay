@@ -69,6 +69,7 @@ const server = createServer(async (req, res) => {
           }
         }
       });
+      res.end();
     } else if (path === '/metrics') {
       prom_active_clients.set(wss.clients.size);
       await redis.ping(prom_redis_health);
