@@ -39,12 +39,12 @@ const prom_redis_health = new client.Gauge({
 const prom_redis_ratelimited_clients = new client.Counter({ name: 'prom_redis_ratelimited_clients', help: 'number of clients limited' });
 
 const server = createServer(async (req, res) => {
-  const origin = req.headers.origin || req.headers.referer || req.connection.remoteAddress;
-  console.log(new Date() + ' Received HTTP request for ' + req.url);
+  console.log(new Date() + ' Received HTTP request for ' + req.url + ' from ' + req.socket.remoteAddress);
   try {
     const { path } = parse(req.url);
     // Register the bitcoin endpoint, ensure it is a local source
-    if (path === '/bitcoin' && allowedOrigins.includes(origin)) {
+    if (path === '/bitcoin' && allowedOrigins.includes(req.socket.remoteAddress)) {
+      console.log('[BTC/event]');
       let body;
       req.on('data', chunk => {
         body += chunk.toString();
@@ -52,7 +52,6 @@ const server = createServer(async (req, res) => {
       req.on('end', () => {
         const parsedData = JSON.parse(body);
         let applyTxs = parsedData?.apply.trasactions;
-        console.log('[BTC/event]');
         for (let i in applyTxs) {
           for (let j in applyTxs[i].transactions) {
             console.log('BTC/apply',applyTxs[i].transactions[j]);
