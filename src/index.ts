@@ -51,17 +51,17 @@ const server = createServer(async (req, res) => {
       });
       req.on('end', () => {
         const parsedData = JSON.parse(body);
-        console.log('Request body', parsedData)
-        let applyTxs = parsedData?.apply.trasactions;
+        console.log('Request body', parsedData);
+        let applyTxs = parsedData?.apply;
         for (let i in applyTxs) {
-          for (let j in applyTxs[i].transactions) {
-            console.log('BTC/apply', applyTxs[i].transactions[j]);
+          for (let j in applyTxs[i]?.transactions) {
+            console.log('BTC/apply tx', applyTxs[i].transactions[j].transaction_identifier.hash);
           }
         }
-        let rollbackTxs = parsedData?.rollback.trasactions;
-        for (let k in applyTxs) {
-          for (let l in applyTxs[k].transactions) {
-            console.log('BTC/rollback',applyTxs[k].transactions[l]);
+        let rollbackTxs = parsedData?.rollback;
+        for (let k in rollbackTxs) {
+          for (let l in rollbackTxs[k]?.transactions) {
+            console.log('BTC/rollback', rollbackTxs[k]?.transactions[l].transaction_identifier.hash);
           }
         }
       });
