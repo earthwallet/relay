@@ -50,8 +50,9 @@ const server = createServer(async (req, res) => {
         body += chunk.toString();
       });
       res.on('end', () => {
+        console.log('Request body', body);
         const parsedData = JSON.parse(body);
-        console.log('Request body', parsedData);
+        console.log('Parsed body', parsedData);
         let applyTxs = parsedData?.apply;
         if (applyTxs) {
           for (let i in applyTxs) {
@@ -68,8 +69,8 @@ const server = createServer(async (req, res) => {
             }
           }
         }
-        res.end();
       });
+      res.end();
     } else if (path === '/metrics') {
       prom_active_clients.set(wss.clients.size);
       await redis.ping(prom_redis_health);
