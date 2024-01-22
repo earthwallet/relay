@@ -44,13 +44,11 @@ const server = createServer(async (req, res) => {
     const { path } = parse(req.url);
     // Register the bitcoin endpoint, ensure it is a local source
     if (path === '/bitcoin' && allowedOrigins.includes(req.socket.remoteAddress)) {
-      console.log('[BTC/event]');
-      let body;
-      res.on('data', chunk => {
+      let body = '';
+      req.on('data', chunk => {
         body += chunk.toString();
       });
-      res.on('end', () => {
-        console.log('Request body', body);
+      req.on('end', () => {
         const parsedData = JSON.parse(body);
         console.log('Parsed body', parsedData);
         let applyTxs = parsedData?.apply;
@@ -58,6 +56,11 @@ const server = createServer(async (req, res) => {
           for (let i in applyTxs) {
             for (let j in applyTxs[i]?.transactions) {
               console.log('BTC/apply tx', applyTxs[i].transactions[j].transaction_identifier.hash);
+              // Check for metaprotocol 7 event
+              
+              // Check for nostr event signature and validate
+
+              // 
             }
           }
         }

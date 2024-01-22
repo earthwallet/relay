@@ -1,8 +1,8 @@
 {
   "name": "earth-relay",
   "version": "0.1.0",
-  "description": "WebSockets frontend for Nostr relay",
-  "author": "Zack Wynne (zack@minds.com)",
+  "description": "Earth Relay for Nostr",
+  "author": "@everhusk",
   "license": "AGPL-3.0",
   "main": "dist/index.js",
   "scripts": {
