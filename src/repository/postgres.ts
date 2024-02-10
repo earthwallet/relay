@@ -70,3 +70,26 @@ export const storeEvent = async (event: Event) => {
     console.log(error);
   }
 }
+
+export const getChainTip = async () => {
+  const readClient = await getConnection();
+  try {
+    console.log('getChainTip');
+    const results = await readClient.raw('SELECT height from chaintip');
+    console.log('GET chaintip from DB: ', results);
+    return results?.[0] || [];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const putChainTip = async (height: number) => {
+  console.log('UPDATE chaintip to DB: ', height);
+  const writeClient = await getConnection();
+  try {
+    const results = await writeClient('chaintip').update({ height });
+    return results?.[0] || [];
+  } catch (error) {
+    console.log(error);
+  }
+}
