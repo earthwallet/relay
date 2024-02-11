@@ -11,7 +11,7 @@ import { parse } from 'url';
 import * as client from 'prom-client';
 
 import * as redis from './repository/redis';
-import BitcoinCoreClient from './repository/bitcoinCore';
+import { syncIndex } from './service/indexer';
 
 // HTTP Server
 const allowedOrigins = ['127.0.0.1', 'localhost'];
@@ -98,7 +98,9 @@ server.listen(parseInt(process.env.SERVER_PORT), '0.0.0.0', () => {
 });
 
 // TODO: Check if initial sync or zmq should be enabled
-listenForNewBlocks();
+syncIndex(Number(process.env.MIN_BLOCK_HEIGHT));
+
+// listenForNewBlocks();
 
 // WSS
 const wss = new WebSocketServer({ server: server });
