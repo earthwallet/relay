@@ -18,9 +18,13 @@
     "k3d:down": "k3d cluster delete nostr-relay",
     "k3d:dev": "tsc -w & skaffold dev",
     "db:migrate": "knex migrate:latest",
-    "db:migrate:rollback": "knex migrate:rollback"
+    "db:migrate:rollback": "knex migrate:rollback",
+    "db:start:local": "docker run --name relay-postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres",
+    "sim:start": "node sim/simulateTx.js"
   },
   "dependencies": {
+    "@cmdcode/crypto-tools": "^2.7.6",
+    "@cmdcode/tapscript": "^1.4.4",
     "axios": "0.27.2",
     "bitcoin-core": "^4.1.0",
     "bitcoinjs-lib": "^6.1.5",
