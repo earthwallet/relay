@@ -4,12 +4,14 @@ import SOCKET from './enum/socket';
 import CLOSE_CODES from './enum/closeCodes';
 import handler from './handler/index';
 import { formatNotice } from './helper/format-event';
+import { listenForNewBlocks } from './repository/zmq';
 
 import { createServer } from 'http';
 import { parse } from 'url';
 import * as client from 'prom-client';
 
 import * as redis from './repository/redis';
+import { syncIndex } from './service/indexer';
 
 // HTTP Server
 const allowedOrigins = ['127.0.0.1', 'localhost'];
@@ -95,8 +97,12 @@ server.listen(parseInt(process.env.SERVER_PORT), '0.0.0.0', () => {
   );
 });
 
-// WSS
+// TODO: Check if initial sync or zmq should be enabled
+syncIndex(Number(process.env.MIN_BLOCK_HEIGHT));
 
+// listenForNewBlocks();
+
+// WSS
 const wss = new WebSocketServer({ server: server });
 
 console.log(`PID: ${process.pid}`);

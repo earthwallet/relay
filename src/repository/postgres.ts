@@ -70,3 +70,43 @@ export const storeEvent = async (event: Event) => {
     console.log(error);
   }
 }
+
+export const getChainTip = async () => {
+  const readClient = await getConnection();
+  try {
+    const results = await readClient.raw('SELECT height from chaintip');
+    return results?.rows[0]?.height || 0;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const putChainTip = async (height: number) => {
+  try {
+    const connection = await getConnection();
+    const result = await connection('chaintip').update({ height });
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const saveBitcoinEvent = async (event: any) => {
+  console.log('STORE bitcoin event to DB: ', event);
+  const writeClient = await getConnection();
+  const date = new Date();
+  try {
+    var results = await writeClient('bitcoin_events').insert({
+      network: event.network,
+      bpubkey: event.bpubkey,
+      block_height: event.block_height,
+      txid: event.txid,
+      content: event.content,
+      npub: event.npub,
+      type: event.type,
+    });
+    return results?.[0] || [];
+  } catch (error) {
+    console.log('saveBitcoinEvent', error.message);
+  }
+}
