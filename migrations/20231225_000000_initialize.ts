@@ -29,6 +29,8 @@ exports.up = function (knex) {
             content varchar(64) UNIQUE,
             npub varchar(64),
             type varchar(64),
+            seen_on_nostr boolean DEFAULT false,
+            verified_signature boolean DEFAULT false,
             PRIMARY KEY (txid)
         );
         

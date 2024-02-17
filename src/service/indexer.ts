@@ -1,6 +1,6 @@
 import * as bitcoin from 'bitcoinjs-lib';
 import BitcoinCoreClient from '../repository/bitcoinCore';
-import { putChainTip, getChainTip, saveBitcoinEvent } from '../repository/postgres';
+import { putChainTip, getChainTip, saveBitcoinEvent, getEventById } from '../repository/postgres';
 
 interface Block {
   hash: string;
@@ -70,6 +70,15 @@ async function processBlock(block: Block): Promise<void> {
             };
             console.log('ready to save event', event);
             await saveBitcoinEvent(event);
+
+            if (eventType === 'stake') {
+              const eventExistsOnNostr = await getEventById(eventId);
+              if (eventExistsOnNostr) {
+                console.log('Event exists on Nostr');
+                // TODO: validate signature 
+                // updateBitcoinEvent(event.content, true, true);
+              }
+            }
           }
         }
       }
