@@ -1,12 +1,26 @@
-# Nostr Relay
+# Earth Relay
 
-This project contains the source code for the Nostr Relay, fork of the Minds Relay.
+Earth Relay is an open source implementation of the Social Network Layer Two scaling solutino for Bitcoin. It features a decentralized architecture using a DHT for peer discovery and Nostr for data availability and verification.
+
+## Features
+
+- Distributed hash table (DHT) based on Kademlia for decentralized peer discovery and data storage
+- Secured using secp256k1 public key cryptography
+- Storage of Nostr social events and messaging
+- Indexing of Bitcoin Social Network transactions for 2-way pegging between Social Network and Bitcoin
+- Caching of Layer 2 zkRollup data availability
+- WebSocket and REST APIs for clients to submit Bitcoin Staking events
+- Easy deployment with Docker
+
+## Architecture
+
+Earth Relay implements a DHT that handles peer discovery and acts as a distributed storage mechanism. Peers connect to each other directly via UDP to exchange Nostr storage events, and users can connect to an Earth Relay via standard Nostr Websocket events. The DHT provides a backup store of events and allows finding peers efficiently.
+
+Event data is indexed in the DHT to generate a reliable way to ensure all important staking activities are gossiped through the Social Network. Other Earth Relays can also view this data via the Earth Relay API.
+
+Availability of zkRollup data is tracked in the DHT to improve access latency. Peers can quickly locate zkRollup data blocks through the relay network, without ever relying on a single node.
 
 ## Implemented NIPs
-
-Nostr defines several "NIPs", or **Nostr Implementation Possibilities**, that define expected behavior for both clients and relays. 
-
-These are the NIPs that are currently implemented by this relay:
 
 ✅ - Implemented
 🚧 - In Progress / Partially Implemented
@@ -34,9 +48,11 @@ These are the NIPs that are currently implemented by this relay:
 
 ## Getting Started
 
-### Run the project
+### Requirements:
 
 This project is built with [Node.js](https://nodejs.org/), and uses `npm` for dependency mangement.
+
+### Running Earth Relay:
 
 You can install the project dependencies and start locally with:
 
@@ -46,51 +62,24 @@ npm i
 npm run dev
 ```
 
-### Execute Tests
+### Connecting a client:
 
-We have unit tests witten with [Jest](https://jestjs.io/). You can run the tests with this command:
+```
+// JS example 
+const ws = new WebSocket("ws://localhost:5000");
 
-```bash
-npm test
+ws.onmessage = (evt) => {
+  const event = JSON.parse(evt.data);
+  
+  if (event.kind === 2) {
+    // New event received
+  }
+}
+
+ws.send(JSON.stringify({...})); // Send event
 ```
 
-### Local K3s
-
-In order for testing the Kubernetes infrastructure included in this project, you can deploy to a local K3s cluster with [k3d](https://k3d.io/) and [Skaffold](https://skaffold.dev/).
-
-If you are using Homebrew, you can install these packages:
-
-```bash
-brew install skaffold k3d
-```
-
-In order for `k3d` to function, you wil also need to have [Docker](https://docs.docker.com/get-docker/) installed.
-
-Once the required dependencies are installed, you can start a `k3d` cluster with:
-
-```bash
-npm run k3d:up
-```
-
-and then deploy to your local cluster using Skaffold with:
-
-```bash
-npm run k3d:dev
-```
-
-Skaffold will automate the process of building an image using the `Dockerfile` specified in this repo and deploying to the `k3d` cluster whenever a change is made to the code.
-
-#### Helm Tests
-
-Along with unit tests, we also have integration tests that are deployed as [Helm chart tests](https://helm.sh/docs/topics/chart_tests/).
-
-After deploying the Helm chart to `k3s`, you can run the integration tests with:
-
-```bash
-helm test nostr-relay
-```
-
-## Requesting a Nostr Event
+See the Nostr API docs for details on integrating with clients.
 
 Currently only requesting specific events by the unique hash is supported. One simple way to test this is by using the [noscl](https://github.com/fiatjaf/noscl) command line client for Nostr (this is the tool used in the integration tests).
 
@@ -101,3 +90,16 @@ noscl relay add ws://localhost:8000/nostr/v1/ws # Default K3s Ingress port used 
 
 noscl event <event_hash>
 ```
+
+### Execute Tests
+
+We have unit tests witten with [Jest](https://jestjs.io/). You can run the tests with this command:
+
+```bash
+npm test
+```
+
+## Contributing
+
+Earth Relay is open source and contributions are welcome! Check out the code on GitHub.
+

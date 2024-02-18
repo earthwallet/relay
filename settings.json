@@ -1,11 +1,10 @@
 {
     "name": "Earth Relay",
-    "icon": "https://earthstaking.com/logo.jpg",
-    "description": "Official Earth Staking Relay for Nostr",
+    "description": "Bitcoin Social Network Relay",
     "pubkey": "npub18rx66emuejjesctxwn9kpp6ujunn39wpg8snrxc486ug7g7ej2kqrcavfw",
-    "contact": "relay@earthstaking.com",
+    "contact": "relay@earthwallet.io",
     "supported_nips": [1, 77],
-    "software": "https://github.com/earthstaking/relay",
+    "software": "https://github.com/earthwallet/relay",
     "version": "0.1.0",
     "limitation": {
       "max_message_length": 16384,
@@ -30,7 +29,7 @@
     "relay_countries": [ "EARTH" ],
     "language_tags": ["en", "es"],
     "tags": ["bitcoin", "ethereum", "earth", "social"],
-    "posting_policy": "https://earthstaking.com/policy.html",
+    "posting_policy": "https://earthwallet.io/legal",
     "payments_url": "",
     "fees": {
       "admission": [{ "amount": 1, "unit": "EARTH" }],

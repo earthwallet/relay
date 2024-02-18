@@ -1,6 +1,6 @@
 import knex from 'knex';
 import 'pg-query-stream';
-import Event from '../model/event';
+import Event from '../types/event';
 
 const getConnection = async () => {
   return knex({

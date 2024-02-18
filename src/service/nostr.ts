@@ -1,9 +1,9 @@
-import { formatEvent, formatNotice, formatOk, formatNotOk } from '../helper/format-event';
-import Event from '../model/event';
+import { formatEvent, formatNotice, formatOk, formatNotOk } from '../util';
+import Event from '../types/event';
 
-import { getEvents } from '../repository/postgres';
-import { storeEvent } from '../repository/postgres';
-import { formatEose } from '../helper/format-event';
+import { getEvents } from '../database/postgres';
+import { storeEvent } from '../database/postgres';
+import { formatEose } from '../util';
 
 const baseUri = process.env.BASE_URI;
 

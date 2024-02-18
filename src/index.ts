@@ -1,16 +1,16 @@
 import { WebSocketServer } from 'ws';
 
-import SOCKET from './enum/socket';
-import CLOSE_CODES from './enum/closeCodes';
+import SOCKET from './util/socket';
+import CLOSE_CODES from './util/closeCodes';
 import handler from './handler/index';
-import { formatNotice } from './helper/format-event';
-import { listenForNewBlocks } from './repository/zmq';
+import { formatNotice } from './util';
+import { listenForNewBlocks } from './database/zmq';
 
 import { createServer } from 'http';
 import { parse } from 'url';
 import * as client from 'prom-client';
 
-import * as redis from './repository/redis';
+import * as redis from './database/redis';
 import { syncIndex } from './service/indexer';
 
 // HTTP Server
@@ -44,39 +44,8 @@ const server = createServer(async (req, res) => {
   console.log(new Date() + ' Received HTTP request for ' + req.url + ' from ' + req.socket.remoteAddress);
   try {
     const { path } = parse(req.url);
-    // Register the bitcoin endpoint, ensure it is a local source
-    if (path === '/bitcoin' && allowedOrigins.includes(req.socket.remoteAddress)) {
-      let body = '';
-      req.on('data', chunk => {
-        body += chunk.toString();
-      });
-      req.on('end', () => {
-        const parsedData = JSON.parse(body);
-        console.log('Parsed body', parsedData);
-        let applyTxs = parsedData?.apply;
-        if (applyTxs) {
-          for (let i in applyTxs) {
-            for (let j in applyTxs[i]?.transactions) {
-              console.log('BTC/apply tx', applyTxs[i].transactions[j].transaction_identifier.hash);
-              // Check for metaprotocol 7 event
-              
-              // Check for nostr event signature and validate
-
-              // 
-            }
-          }
-        }
-        let rollbackTxs = parsedData?.rollback;
-        if (rollbackTxs.length > 0) {
-          for (let k in rollbackTxs) {
-            for (let l in rollbackTxs[k]?.transactions) {
-              console.log('BTC/rollback', rollbackTxs[k]?.transactions[l].transaction_identifier.hash);
-            }
-          }
-        }
-      });
-      res.end();
-    } else if (path === '/metrics') {
+    // Register the bitcoin endpoint, ensure it's a valid Earth Node
+    if (path === '/metrics') {
       prom_active_clients.set(wss.clients.size);
       await redis.ping(prom_redis_health);
       res.setHeader('Content-Type', client.register.contentType);

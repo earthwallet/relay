@@ -1,4 +1,4 @@
-import NOSTR from '../../enum/nostr';
+import NOSTR from './nostr';
 
 const formatEvent = (subscriptionId: string, event: object) =>
   JSON.stringify([NOSTR.EVENT, subscriptionId, event]);

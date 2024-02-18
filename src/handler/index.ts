@@ -1,6 +1,6 @@
-import NOSTR from '../enum/nostr';
-import Subscription from '../model/subscription';
-import earthRelayService from '../service/earthRelay';
+import NOSTR from '../util/nostr';
+import Subscription from '../types/subscription';
+import earthRelayService from '../service/nostr';
 
 const { formatNotice } = require('../helper/format-event');
 

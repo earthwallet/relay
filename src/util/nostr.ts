@@ -1,6 +1,7 @@
 const NOSTR_MESSAGE = {
   OK: 'OK',
   REQ: 'REQ',
+  AUTH: 'AUTH',
   EOSE: 'EOSE',
   EVENT: 'EVENT',
   CLOSE: 'CLOSE',

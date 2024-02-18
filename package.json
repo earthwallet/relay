@@ -20,7 +20,7 @@
     "db:migrate": "knex migrate:latest",
     "db:migrate:rollback": "knex migrate:rollback",
     "db:start:local": "docker run --name relay-postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres",
-    "sim:start": "node sim/simulateTx.js"
+    "scripts:start": "node scripts/simulateTx.js"
   },
   "dependencies": {
     "@cmdcode/crypto-tools": "^2.7.6",

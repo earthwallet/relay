@@ -1,6 +1,6 @@
 import * as bitcoin from 'bitcoinjs-lib';
-import BitcoinCoreClient from '../repository/bitcoinCore';
-import { putChainTip, getChainTip, saveBitcoinEvent } from '../repository/postgres';
+import BitcoinCoreClient from '../database/bitcoinCore';
+import { putChainTip, getChainTip, saveBitcoinEvent } from '../database/postgres';
 
 interface Block {
   hash: string;
