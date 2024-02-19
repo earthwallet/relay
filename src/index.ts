@@ -1,7 +1,6 @@
 import { WebSocketServer } from 'ws';
 
-import SOCKET from './util/socket';
-import CLOSE_CODES from './util/closeCodes';
+import { SOCKET, CLOSE_CODES } from './util';
 import handler from './handler/index';
 import { formatNotice } from './util';
 import { listenForNewBlocks } from './database/zmq';
@@ -14,7 +13,7 @@ import * as redis from './database/redis';
 import { syncIndex } from './service/indexer';
 
 // HTTP Server
-const allowedOrigins = ['127.0.0.1', 'localhost'];
+const allowedOrigins = ['127.0.0.1', 'https://bitcoinstaking.com'];
 const prom_active_subscriptions = new client.Gauge({
   name: 'nostr_active_subscriptions',
   help: 'Number of active subscriptions'
@@ -44,8 +43,8 @@ const server = createServer(async (req, res) => {
   console.log(new Date() + ' Received HTTP request for ' + req.url + ' from ' + req.socket.remoteAddress);
   try {
     const { path } = parse(req.url);
-    // Register the bitcoin endpoint, ensure it's a valid Earth Node
-    if (path === '/metrics') {
+    // Register the bitcoin staking endpoint
+    if (path === '/blocks') {
       prom_active_clients.set(wss.clients.size);
       await redis.ping(prom_redis_health);
       res.setHeader('Content-Type', client.register.contentType);
@@ -61,9 +60,7 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(parseInt(process.env.SERVER_PORT), '0.0.0.0', () => {
-  console.log(
-    new Date() + ` Server is listening on port ${process.env.SERVER_PORT}`
-  );
+  console.log(`X server listening on port: ${process.env.SERVER_PORT}`);
 });
 
 // TODO: Check if initial sync or zmq should be enabled
@@ -75,9 +72,7 @@ syncIndex(Number(process.env.MIN_BLOCK_HEIGHT));
 const wss = new WebSocketServer({ server: server });
 
 console.log(`PID: ${process.pid}`);
-console.log(
-  `Listening on port: ${process.env.SERVER_PORT}`
-);
+console.log(`Websocket server listening on port: ${process.env.SERVER_PORT}`);
 
 // Open socket and pass event to the event handler
 wss.on(SOCKET.CONNECTION, (ws, req) => {

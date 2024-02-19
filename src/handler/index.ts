@@ -1,6 +1,6 @@
-import NOSTR from '../util/nostr';
+import { NOSTR } from '../util';
 import Subscription from '../types/subscription';
-import earthRelayService from '../service/nostr';
+import nostrService from '../service/nostr';
 
 const { formatNotice } = require('../helper/format-event');
 
@@ -45,12 +45,12 @@ const handler = async (
         prom_number_of_reqs.inc();
 
         // Fetch events from PostgreSQL
-        await earthRelayService.getReq(ws, filters, subscriptionId);
+        await nostrService.getReq(ws, filters, subscriptionId);
         break;
       case NOSTR.EVENT:
         prom_number_of_events.inc();
 
-        await earthRelayService.putEvent(ws, event[1]);
+        await nostrService.putEvent(ws, event[1]);
         break;
       case NOSTR.CLOSE:
         subs.delete(subscriptionId);

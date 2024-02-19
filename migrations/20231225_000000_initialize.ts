@@ -32,7 +32,7 @@ exports.up = function (knex) {
             PRIMARY KEY (txid)
         );
         
-        CREATE TABLE IF NOT EXISTS ethereum_events (
+        CREATE TABLE IF NOT EXISTS social_network_events (
             network int,
             epubkey varchar(64),
             block_height int,

@@ -10,7 +10,14 @@ Earth Relay is an open source implementation of the Social Network Layer Two sca
 - Indexing of Bitcoin Social Network transactions for 2-way pegging between Social Network and Bitcoin
 - Caching of Layer 2 zkRollup data availability
 - WebSocket and REST APIs for clients to submit Bitcoin Staking events
-- Easy deployment with Docker
+[ ] Add Bitcoin stake event listener
+    - user stores nostr stake event with amount deposited
+    - validate the signature is correct
+    - store in postgres
+[ ] Add X signer RPC endpoint
+    - Gets all stake events, optional block range flag
+    - X creates mint signatures based off of these
+[ ] Easy deployment with Docker
 
 ## Architecture
 

@@ -1,11 +1,12 @@
+//@ts-nocheck
 const secp256k1 = require('secp256k1');
 const dgram = require('dgram');
 
 // DHT configuration
 const EARTH_NODE_PORT = 7777;
 const EARTH_BOOTSTRAP_NODES = [
-  { host: '123.45.67.89', port: DHT_PORT },
-  { host: '98.76.54.321', port: DHT_PORT }
+  { host: '123.45.67.89', port: process.env.EARTH_PORT },
+  { host: '98.76.54.321', port: process.env.EARTH_PORT }
 ];
 
 // Local node's keypair 
@@ -74,7 +75,7 @@ function lookupData(eventId) {
 // Sign and send message to K closest nodes 
 function signAndSendToNodes(message, eventId) {
   // Look up K closest nodes
-  const nearestNodes = findNearestNodes(eventId, K);
+  const nearestNodes = findNeighbors(eventId, K);
 
   // Sign message with local private key
   const signature = secp256k1.sign(message, localPrivateKey);
@@ -112,7 +113,35 @@ function ping(node) {
     id: localPublicKey
   });
 
-  signAndSend(node.socket, message);
+  signAndSendToNodes(node.socket, message);
+}
+
+// Encode packet header 
+function encodePacketHeader(publicKey, signature) {
+  return Buffer.concat([
+    publicKey, // 32 bytes
+    signature // 64 bytes
+  ]); 
+}
+
+// Refresh the routing table buckets
+function refreshRoutingTable() {
+  // Go through each bucket
+  // Ping old nodes that haven't been seen
+  // Add new nodes
+  // Remove stale nodes
+}
+
+// Send the K closest nodes to the target
+function sendClosestNodes(eventId, remote) {
+  const nearestNodes = findNeighbors(eventId);
+
+  const message = JSON.stringify({
+    t: 'closest_nodes',
+    nodes: nearestNodes
+  });
+
+  signAndSendToNodes(remote.socket, message);
 }
 
 // Receive incoming messages
@@ -162,7 +191,7 @@ function onMessage(message, remote) {
 }
 
 // Main DHT entry point 
-function startDHT() {
+export function startDHT() {
   generateKeypair();
   bootstrapConnections();
 
@@ -172,5 +201,3 @@ function startDHT() {
 
   setInterval(heartbeat, HEARTBEAT_INTERVAL);
 }
-
-startDHT();
