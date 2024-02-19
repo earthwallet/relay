@@ -50,6 +50,17 @@ export const getEvents = async (filters: any) => {
   }
 }
 
+export const getEventById = async (eventId: any) => {
+  console.log('GET eventId from DB: ', eventId);
+  const readClient = await getConnection();
+  try {
+    const results = await readClient.raw('SELECT * from events where id = ?', [eventId]);
+    return results?.[0] || [];
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const storeEvent = async (event: Event) => {
   console.log('STORE event to DB: ', event);
   const writeClient = await getConnection();
@@ -108,5 +119,20 @@ export const saveBitcoinEvent = async (event: any) => {
     return results?.[0] || [];
   } catch (error) {
     console.log('saveBitcoinEvent', error.message);
+  }
+}
+
+export const updateBitcoinEvent = async (content: string, seen_on_nostr: boolean, verified_signature: boolean) => {
+  console.log('Update bitcoin event to DB: ', seen_on_nostr, verified_signature);
+  const writeClient = await getConnection();
+  const date = new Date();
+  try {
+    var results = await writeClient('bitcoin_events').where({ content }).update({
+      seen_on_nostr,
+      verified_signature,
+    });
+    return results?.[0] || [];
+  } catch (error) {
+    console.log('updateBitcoinEvent', error.message);
   }
 }

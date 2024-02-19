@@ -83,6 +83,7 @@ wss.on(SOCKET.CONNECTION, (ws, req) => {
   const xff = req.headers['x-forwarded-for'];
   if (xff) console.log(`[INFO]: Found XFF header ${xff}. Using in place of address ${req.socket.remoteAddress}`);
 
+  // TODO: implement IP based access control when L2 rpc url is available
   // Set source IP
   const sourceAddress = xff ? xff.split(',')[0].trim() : req.socket.remoteAddress;
 
