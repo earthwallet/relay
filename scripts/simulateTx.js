@@ -144,16 +144,22 @@ async function revealIt(data, receiveAddress) {
 async function run() {
     const data = await createAddress('dummyeventid', 'stake');
     console.log(data);
-    // return;
-
-    // fund the address with 100_000 sats
+    // Step-1 
+    // generate an address by running this script "npm run scripts:start"
+    // Step-2
+    // fund the address with 10_000_000 sats
+    // bitcoin-cli -rpcwallet=miner sendtoaddress bcrt1pqdfpelza9z852uwcgju8nu5cz2ecg6glt4rqljleqcslq4nxmu4stlwspc 0.1
+    // bitcoin-cli -rpcwallet=miner -generate 1
     // wait for the transaction to confirm, populate below info and then run it again
     data.fundingTx = {
-        id: 'bc01806ee124c9723bc19e9f76f1bef3611f4a87ada0eb8c60185b0ebfc3ead1',
+        id: '817aab7a4348cff73c69fa3246b86ff11efae36dc28bb009e1dc0b6c92d49287',
         vout: 0,
         amount: 10_000_000
     };
     const { hex, txdata } = await revealIt(data, receiveAddress);
+    // Step-3
+    // broadcast the transaction
+    // bitcoin-cli sendrawtransaction <hex>
     console.log('broadcast this: ', hex);
     const tx = bitcoin.Transaction.fromHex(hex);
     const txid = tx.getId();
