@@ -25,7 +25,7 @@ class BitcoinCoreClient {
   async getBlock(blockHash: string): Promise<any> {
     try {
       const result = await this.client.getBlock(blockHash);
-      console.log('getBlock result', result);
+      // console.log('getBlock result', result);
       return result;
     } catch (error) {
       throw new Error(`Error getBlock: ${error.message}`);

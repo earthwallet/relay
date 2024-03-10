@@ -110,3 +110,28 @@ npm test
 
 Earth Relay is open source and contributions are welcome! Check out the code on GitHub.
 
+
+## Nostr event indexing
+1- Check and update `scripts/simulateTx.js` with the event type you want to simulate.  
+2- run `npm run scripts:start` to generate a deposit address  
+3- fund the address from local regtest miner  
+```
+bitcoin-cli -rpcwallet=miner sendtoaddress bcrt1pqdfpelza9z852uwcgju8nu5cz2ecg6glt4rqljleqcslq4nxmu4stlwspc 0.1
+bitcoin-cli -rpcwallet=miner -generate 1
+```
+4- update fundingTx inside `scripts/simulateTx.js` with the sent transaction id  
+5- run the script again to generate a valid raw earth event transaction  
+6- broadcast this tx  
+7- run the local postgres `npm run db:start:local`  
+8- run the relay `npm run dev` while using local regtest node and observe the indexing of this event.  
+9- confirm that the event is in DB, make sure sync is completed and indexer is synced up to chaintip.
+```
+PGPASSWORD='postgres' psql -h localhost -U postgres
+\c defaultdb;
+select * from chaintip;
+214
+select * from bitcoin_events;
+ regtest | b65c844ea6321ef42ffe21e1c5b7018b07f0aac07540dcc7c90b4e79a13be335 |          198 | 9a6a37ca82343c3d952207ded7626dc07d888b34c4b79995f900cdb2a28
+6a477 | 64756d6d796576656e746964 |    
+  | stake
+```  
